@@ -37,7 +37,7 @@ public class WeightedGraph<V> extends AbstractGraph<V> {
     parent[sourceVertexIndex] = -1; // The parent of source is set to -1
 
     // T stores the vertices whose path found so far
-    List<Integer> T = new ArrayList<>();
+    Set<Integer> T = new HashSet<>();
 
     // Expand T
     while (T.size() < getSize()) {
