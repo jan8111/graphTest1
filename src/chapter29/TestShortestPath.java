@@ -1,6 +1,6 @@
 package chapter29;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class TestShortestPath {
   public static void main(String[] args) {
@@ -28,13 +28,12 @@ public class TestShortestPath {
     };
 
     WeightedGraph<String> graph1 = new WeightedGraph<>(vertices, edges);
-    WeightedGraph<String>.ShortestPathTree pathTree = graph1.getShortestPath(graph1.getIndex("Chicago"));
-   // pathTree.printAllPaths();
+    ArrayList<Integer> path1 = graph1.getShortestPath(0, 11);
+    //pathTree.printAllPaths();
 
-    System.out.print("Shortest path from Houston to Chicago: ");
-    List<String> path = pathTree.getPath(graph1.getIndex("Houston"));
-    for (String s: path) {
-      System.out.print(s + " ");
+
+    for (Integer s: path1) {
+      System.out.print(s + "<-");
     }
 
   }

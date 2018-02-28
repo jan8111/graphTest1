@@ -40,10 +40,6 @@ public interface Graph<V> {
   /** Remove an edge (u, v) from the graph */  
   public boolean remove(int u, int v);
   
-  /** Obtain a depth-first search tree */
-  public UnweightedGraph<V>.SearchTree dfs(int v);
 
-  /** Obtain a breadth-first search tree */
-  public UnweightedGraph<V>.SearchTree bfs(int v);
 }
 

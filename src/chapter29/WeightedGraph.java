@@ -93,80 +93,21 @@ public class WeightedGraph<V> extends UnweightedGraph<V> {
     return addEdge(new WeightedEdge(u, v, weight));
   }
 
-  /** Get a minimum spanning tree rooted at vertex 0 */
-  public MST getMinimumSpanningTree() {
-    return getMinimumSpanningTree(0);
-  }
-  
-  /** Get a minimum spanning tree rooted at a specified vertex */
-  public MST getMinimumSpanningTree(int startingVertex) {
-    // cost[v] stores the cost by adding v to the tree
-    double[] cost = new double[getSize()];
-    for (int i = 0; i < cost.length; i++) {
-      cost[i] = Double.POSITIVE_INFINITY; // Initial cost 
-    }
-    cost[startingVertex] = 0; // Cost of source is 0
 
-    int[] parent = new int[getSize()]; // Parent of a vertex
-    parent[startingVertex] = -1; // startingVertex is the root
-    double totalWeight = 0; // Total weight of the tree thus far
 
-    List<Integer> T = new ArrayList<>();
-    
-    // Expand T
-    while (T.size() < getSize()) {
-      // Find smallest cost u in V - T 
-      int u = -1; // Vertex to be determined
-      double currentMinCost = Double.POSITIVE_INFINITY;
-      for (int i = 0; i < getSize(); i++) {
-        if (!T.contains(i) && cost[i] < currentMinCost) {
-          currentMinCost = cost[i];
-          u = i;
-        }
-      }
-
-      if (u == -1) break; else T.add(u); // Add a new vertex to T
-      totalWeight += cost[u]; // Add cost[u] to the tree
-
-      // Adjust cost[v] for v that is adjacent to u and v in V - T
-      for (Edge e : neighbors.get(u)) {
-        if (!T.contains(e.v) && cost[e.v] > ((WeightedEdge)e).weight) {
-          cost[e.v] = ((WeightedEdge)e).weight;
-          parent[e.v] = u; 
-        }
-      }
-    } // End of while
-
-    return new MST(startingVertex, parent, T, totalWeight);
-  }
-
-  /** MST is an inner class in WeightedGraph */
-  public class MST extends SearchTree {
-    private double totalWeight; // Total weight of all edges in the tree
-
-    public MST(int root, int[] parent, List<Integer> searchOrder,
-        double totalWeight) {
-      super(root, parent, searchOrder);
-      this.totalWeight = totalWeight;
-    }
-
-    public double getTotalWeight() {
-      return totalWeight;
-    }
-  }
 
   /** Find single source shortest paths */
-  public ShortestPathTree getShortestPath(int sourceVertex) {
+  public ArrayList<Integer> getShortestPath(int sourceVertexIndex, int destVertexIndex) {
     // cost[v] stores the cost of the path from v to the source
     double[] cost = new double[getSize()];
     for (int i = 0; i < cost.length; i++) {
       cost[i] = Double.POSITIVE_INFINITY; // Initial cost set to infinity
     }
-    cost[sourceVertex] = 0; // Cost of source is 0
+    cost[sourceVertexIndex] = 0; // Cost of source is 0
 
     // parent[v] stores the previous vertex of v in the path
     int[] parent = new int[getSize()];
-    parent[sourceVertex] = -1; // The parent of source is set to -1
+    parent[sourceVertexIndex] = -1; // The parent of source is set to -1
     
     // T stores the vertices whose path found so far
     List<Integer> T = new ArrayList<>();
@@ -195,34 +136,15 @@ public class WeightedGraph<V> extends UnweightedGraph<V> {
       }
     } // End of while
 
-    // Create a ShortestPathTree
-    return new ShortestPathTree(sourceVertex, parent, T, cost);
+    ArrayList<Integer> retPath = new ArrayList<>();
+    do {
+      retPath.add( (destVertexIndex));
+      destVertexIndex = parent[destVertexIndex];
+    }
+    while (destVertexIndex != -1);
+    return retPath;
   }
 
-  /** ShortestPathTree is an inner class in WeightedGraph */
-  public class ShortestPathTree extends SearchTree {
-    private double[] cost; // cost[v] is the cost from v to source
 
-    /** Construct a path */
-    public ShortestPathTree(int source, int[] parent, 
-        List<Integer> searchOrder, double[] cost) {
-      super(source, parent, searchOrder);
-      this.cost = cost;
-    }
-
-    /** Return the cost for a path from the root to vertex v */
-    public double getCost(int v) {
-      return cost[v];
-    }
-
-    /** Print paths from all vertices to the source */
-    public void printAllPaths() {
-      System.out.println("All shortest paths from " + vertices.get(getRoot()) + " are:");
-      for (int i = 0; i < cost.length; i++) {
-        printPath(i); // Print a path from i to the source
-        System.out.println("(cost: " + cost[i] + ")"); // Path cost
-      }
-    }
-  }
 }
 
