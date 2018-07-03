@@ -2,7 +2,7 @@ package 算法图解练习;
 
 import java.util.*;
 
-public class Exe1 {
+public class 狄克斯特拉1 {
     public static void main(String[] args) {
 
         //init data
@@ -19,6 +19,8 @@ public class Exe1 {
         data.put("B",Arrays.asList("A","END"));
         data.put("END",Arrays.asList(""));
 
+        Map<String ,String> parentNode= new HashMap<>();//目标--》 源头
+
         //prepare costs
         Map<String,Integer> costs = new HashMap<>();
         List<String> visited = new ArrayList<>();
@@ -33,12 +35,22 @@ public class Exe1 {
                 }
             }
         }
-        loop1(weights, costs, visited);
+        for (String key1 : data.keySet()) {
+            if (key1.equals("START")) {
+                List<String> value2 = data.get(key1);
+                for (String s : value2) {
+                    parentNode.put(s,"START");
+                }
+            }
+        }
 
+        loop1(weights, costs, visited,parentNode);
+
+        System.out.println("parentNode = " + parentNode);
         System.out.println("costs = " + costs);
     }
 
-    private static void loop1(Map<String, Integer> weights, Map<String, Integer> costs, List<String> visited) {
+    private static void loop1(Map<String, Integer> weights, Map<String, Integer> costs, List<String> visited, Map<String, String> parentNode) {
         //step1
         String minCostNode = findMinCost(costs,visited);
         Integer minCostValue= costs.get(minCostNode);
@@ -47,11 +59,13 @@ public class Exe1 {
         //step2
         for (String key3 : weights.keySet()) {
             if(key3.startsWith(minCostNode)){
+                String sourceKey1=key3.split("_")[0];
                 String targetKey1=key3.split("_")[1];
                 Integer costTarget = costs.get(targetKey1);
                 Integer costCurrent = weights.get(key3);
                 if(costCurrent <costTarget ){
                     costs.put(targetKey1,costCurrent+minCostValue);
+                    parentNode.put(targetKey1,sourceKey1);
                 }
             }
         }
@@ -60,7 +74,7 @@ public class Exe1 {
         if(allDone){
             return;
         }else{
-            loop1(weights, costs, visited);
+            loop1(weights, costs, visited, parentNode);
         }
 
     }
