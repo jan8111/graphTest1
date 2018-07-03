@@ -19,11 +19,14 @@ public class 狄克斯特拉1 {
         data.put("B",Arrays.asList("A","END"));
         data.put("END",Arrays.asList(""));
 
-        Map<String ,String> parentNode= new HashMap<>();//目标--》 源头
+        dijkstra1(weights, data);
+    }
 
+    static void dijkstra1(Map<String, Integer> weights, Map<String, List<String>> data) {
         //prepare costs
         Map<String,Integer> costs = new HashMap<>();
         List<String> visited = new ArrayList<>();
+        Map<String ,String> parentNode= new HashMap<>();//目标--》 源头
         for (String key1 : data.keySet()) {
             if(!key1.equals("START")){
                 String key2 = "START"+"_"+key1;
